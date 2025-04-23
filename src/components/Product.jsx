@@ -1,6 +1,6 @@
 
 
-export default function Product({image, title, price, description}) {
+export default function Product({image, title, price, description, addItemToCart, id}) {
   return (
     <article className="product">
       <img src={image} alt={title} />
@@ -11,7 +11,7 @@ export default function Product({image, title, price, description}) {
           <p>{description}</p>
         </div>
         <p className='product-actions'>
-          <button >Add to Cart</button>
+          <button onClick={()=> addItemToCart(id)}>Add to Cart</button>
         </p>
       </div>
     </article>
