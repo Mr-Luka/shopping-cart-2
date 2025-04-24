@@ -15,35 +15,39 @@ function App() {
     setShoppingCart(prevCart => {
       const updatedItems = [...prevCart.items];
 
-      const existingCartItemIndex = updatedItems.findIndex(item => item.id === id);
-      const existingCartItem = updatedItems[existingCartItemIndex];
+      const updatedItemIndex = updatedItems.findIndex(item => item.id === id);
+      const existingCartItem = updatedItems[updatedItemIndex];
 
       if(existingCartItem){
         const updatedItem = {
           ...existingCartItem,
           quantity: existingCartItem.quantity + 1
-        };
-        updatedItems[existingCartItemIndex] = updatedItem;
+        }
+        updatedItems[existingCartItem] = updatedItem; 
       } else {
         const product = DUMMY_PRODUCTS.find(product => product.id === id);
         updatedItems.push({
           id: id,
           name: product.title,
           price: product.price,
-          quantity: 1,
-        })
-      };
+          quantity: 1
+        });
+      }
       return {
-        items: updatedItems
+        items: updatedItems,
       }
     })
   }
 
+  function handleUpdateCartItemQuantity(){
 
+  }
 
   return (
     <>
       <Header
+        cart={shoppingCart}
+        onUpdateItemQuantity={handleUpdateCartItemQuantity}
       />
       <Shop
         addItemToCart={handleAddItemToCart}
