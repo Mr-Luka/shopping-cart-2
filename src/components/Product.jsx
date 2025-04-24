@@ -1,5 +1,4 @@
 
-
 export default function Product({image, title, price, description, addItemToCart, id}) {
   return (
     <article className="product">
