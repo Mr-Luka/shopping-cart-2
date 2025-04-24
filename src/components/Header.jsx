@@ -10,12 +10,25 @@ export default function Header({cart, onUpdateItemQuantity}) {
     modal.current.open();
   }
 
+  let modalAction = <button>Close</button>
+
+  if(cartQuantity > 0) {
+    modalAction = (
+      <>
+        <button>Close</button>
+        <button>Checkout</button>
+      </>
+    )
+  }
+
   return (
     <>
       <CartModal 
         ref={modal}
         cartItems={cart.items}
         onUpdateItemQuantity={onUpdateItemQuantity}
+        actions={modalAction}
+        title='Your Cart'
       />
       <header id="main-header">
         <div id="main-title">
