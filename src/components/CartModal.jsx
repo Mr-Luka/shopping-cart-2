@@ -1,17 +1,33 @@
-
+import {useRef, useImperativeHandle, forwardRef} from 'react';
+import {createPortal} from 'react-dom';
 import Cart from './Cart';
 
-export default function Modal() {
+const Modal = forwardRef( function Modal({title, actions, cartItems}, ref) {
+  const modal = useRef();
+
+  useImperativeHandle(ref, ()=> {
+    return {
+      open(){
+        modal.current.showModal();
+      }
+    }
+  });
+  
+  
 
 
-  return (
-    <dialog id="modal" >
-      <h2>title</h2>
-      <Cart/>
+  return createPortal(
+    <dialog id="modal" ref={modal}>
+      <h2>{title}</h2>
+      <Cart items={cartItems}/>
       <form method="dialog" id="modal-actions">
+      {actions}
       </form>
-    </dialog>
+    </dialog>,
+    document.getElementById('modal')
   );
-};
+});
+
+export default Modal;
 
 
