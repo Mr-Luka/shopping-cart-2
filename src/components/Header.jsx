@@ -9,20 +9,11 @@ export default function Header({shoppingCart}) {
     modal.current.open();
   }
 
-  let modalActivity = <button>Close</button>
 
-  if (cartQuantity > 0 ){
-    modalActivity = (
-      <>
-        <button>Close</button>
-        <button>Checkout</button>
-      </>
-    )
-  }
   
   return (
     <>
-      <CartModal />
+      <CartModal ref={modal} />
       <header id="main-header">
         <div id="main-title">
           <img src="logo.png" alt="Elegant model" />
