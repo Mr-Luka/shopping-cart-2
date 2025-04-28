@@ -1,5 +1,3 @@
-import { DUMMY_PRODUCTS } from "../dummy-products";
-import Product from './Product.jsx';
 
 export default function Shop({children}) {
   return (

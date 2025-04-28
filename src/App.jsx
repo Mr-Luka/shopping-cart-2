@@ -73,15 +73,11 @@ function App() {
 
   return (
     <ShopContext.Provider value={ctxValue}>
-      <Header
-        cartItems={shoppingCart}
-        handleAddOrReduceItems={handleAddOrReduceItems}
-
-      />
+      <Header/>
       <Shop>
         {DUMMY_PRODUCTS.map(product =>
           <li key={product.id}>
-            <Product {...product} addItemToCart={handleAddItemToCart}/>
+            <Product {...product}/>
           </li>
         )}
       </Shop>

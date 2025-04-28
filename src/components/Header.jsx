@@ -1,8 +1,11 @@
-import {useRef} from 'react';
+import {useRef, useContext} from 'react';
+import { ShopContext } from '../store/shopping-cart-context.jsx';
 import CartModal from './CartModal.jsx';
-export default function Header({ cartItems}) {
+
+export default function Header() {
   const modal = useRef();
-  const cartQuantity = cartItems.items.length;
+  const {items} = useContext(ShopContext)
+  const cartQuantity = items.length;
 
 
   function handleOpenCart(){
@@ -10,7 +13,7 @@ export default function Header({ cartItems}) {
   }
 
   let modalActivity = <button>Cancel</button>
-  if(cartItems.items.length > 0){
+  if(items.length > 0){
     modalActivity = (
       <>
         <button>Close</button>
