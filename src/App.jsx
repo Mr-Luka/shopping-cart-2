@@ -1,10 +1,12 @@
 import {useState} from 'react';
 
+
 import Header from './components/Header.jsx';
 import Shop from './components/Shop.jsx';
 import Product from './components/Product.jsx';
 
 import { DUMMY_PRODUCTS } from './dummy-products.js';
+import {ShopContext} from './store/shopping-cart-context.jsx';
 
 
 function App() {
@@ -63,8 +65,14 @@ function App() {
     })
   }
 
+  const ctxValue = {
+    items: shoppingCart.items,
+    addItemsToCart: handleAddItemToCart,
+    updateItemQuantity: handleAddOrReduceItems
+  }
+
   return (
-    <>
+    <ShopContext.Provider value={ctxValue}>
       <Header
         cartItems={shoppingCart}
         handleAddOrReduceItems={handleAddOrReduceItems}
@@ -77,7 +85,7 @@ function App() {
           </li>
         )}
       </Shop>
-    </>
+    </ShopContext.Provider>
   );
 }
 

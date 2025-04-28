@@ -1,6 +1,6 @@
 import {useRef} from 'react';
 import CartModal from './CartModal.jsx';
-export default function Header({ cartItems, handleAddOrReduceItems}) {
+export default function Header({ cartItems}) {
   const modal = useRef();
   const cartQuantity = cartItems.items.length;
 
@@ -21,7 +21,7 @@ export default function Header({ cartItems, handleAddOrReduceItems}) {
   
   return (
     <>
-      <CartModal title='Your Cart' modalActivity={modalActivity} ref={modal} cartItems={cartItems.items} handleAddOrReduceItems={handleAddOrReduceItems}/>
+      <CartModal title='Your Cart' modalActivity={modalActivity} ref={modal}/>
       <header id="main-header">
         <div id="main-title">
           <img src="logo.png" alt="Elegant model" />
