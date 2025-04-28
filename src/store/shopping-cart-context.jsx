@@ -1,4 +1,5 @@
-import {createContext} from 'react';
+import {createContext, useState} from 'react';
+import { DUMMY_PRODUCTS } from '../dummy-products';
 
 
 export const ShopContext = createContext({
@@ -6,3 +7,71 @@ export const ShopContext = createContext({
     addItemsToCart: ()=> {},
     updateItemQuantity: ()=> {}
 })
+
+export default function CartContextProvider({children}){
+    const [shoppingCart, setShoppingCart] = useState({
+    items: [],
+  })
+
+  function handleAddItemToCart(id){
+    setShoppingCart(prevCart => {
+      const updatedItems = [...prevCart.items];
+      const existingItemIndex = updatedItems.findIndex(product => product.id === id);
+
+      const existingItem = updatedItems[existingItemIndex];
+
+      if(existingItem){
+        const updatedItem = {
+          ...existingItem,
+          quantity: existingItem.quantity + 1,
+        }
+        updatedItems[existingItemIndex] = updatedItem;
+      } else {
+        const product = DUMMY_PRODUCTS.find(product => product.id === id);
+        updatedItems.push({
+          id: id,
+          name: product.title,
+          price: product.price,
+          quantity: 1
+        })
+      };
+      return {
+        items: updatedItems,
+      }
+    })
+  }
+
+  function handleAddOrReduceItems(productId, amount){
+    setShoppingCart(prevCart => {
+      const updatedItems = [...prevCart.items];
+      const updatedItemIndex = updatedItems.findIndex(item => item.id === productId);
+
+      const updatedItem = {
+        ...updatedItems[updatedItemIndex]
+      };
+
+      updatedItem.quantity += amount;
+
+      if(updatedItem.quantity <= 0) {
+        updatedItems.splice(updatedItemIndex, 1);
+      } else {
+        updatedItems[updatedItemIndex] = updatedItem;
+      }
+
+      return {
+        items: updatedItems,
+      }
+    })
+  }
+
+  const ctxValue = {
+    items: shoppingCart.items,
+    addItemsToCart: handleAddItemToCart,
+    updateItemQuantity: handleAddOrReduceItems
+  }
+
+  return <ShopContext.Provider value={ctxValue}>
+        {children}
+    </ShopContext.Provider>
+  
+}
