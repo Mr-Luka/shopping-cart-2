@@ -1,11 +1,11 @@
 
-export default function Cart({items}) {
+export default function Cart({items, handleAddOrReduceItems}) {
   
   const totalPrice = items.reduce(
     (acc, item) => acc + item.price * item.quantity, 0
   )
 
-  const formattedTotalPrice = `$${totalPrice.toFixed(2)}`
+  const formattedTotalPrice = `$${totalPrice.toFixed(2)}`;
 
   return (
     <div id="cart">
@@ -22,11 +22,11 @@ export default function Cart({items}) {
                   <span> ({formattedPrice})</span>
                 </div>
                 <div className="cart-item-actions">
-                  <button >
+                  <button onClick={()=> handleAddOrReduceItems(item.id, -1)}>
                     -
                   </button>
                   <span>{item.quantity}</span>
-                  <button >
+                  <button onClick={()=> handleAddOrReduceItems(item.id, 1)}>
                     +
                   </button>
                 </div>

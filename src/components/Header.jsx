@@ -1,19 +1,27 @@
 import {useRef} from 'react';
 import CartModal from './CartModal.jsx';
-export default function Header({shoppingCart}) {
+export default function Header({ cartItems, handleAddOrReduceItems}) {
   const modal = useRef();
-  const cartQuantity = shoppingCart.items.length;
+  const cartQuantity = cartItems.items.length;
 
 
   function handleOpenCart(){
     modal.current.open();
   }
 
-
+  let modalActivity = <button>Cancel</button>
+  if(cartItems.items.length > 0){
+    modalActivity = (
+      <>
+        <button>Close</button>
+        <button>Checkout</button>
+      </>
+    )
+  }
   
   return (
     <>
-      <CartModal ref={modal} />
+      <CartModal title='Your Cart' modalActivity={modalActivity} ref={modal} cartItems={cartItems.items} handleAddOrReduceItems={handleAddOrReduceItems}/>
       <header id="main-header">
         <div id="main-title">
           <img src="logo.png" alt="Elegant model" />
