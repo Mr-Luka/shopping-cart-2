@@ -1,4 +1,4 @@
-import {createContext, useReducer} from 'react';
+import {createContext, useState,} from 'react';
 import { DUMMY_PRODUCTS } from '../dummy-products';
 
 
@@ -8,10 +8,15 @@ export const ShopContext = createContext({
     updateItemQuantity: ()=> {}
 })
 
-function shoppingCartReducer( state, action) {
-    if(action.type === 'ADD_ITEM') {
-      const updatedItems = [...state.items];
-      const existingItemIndex = updatedItems.findIndex(product => product.id === action.payload.id);
+export default function CartContextProvider({children}){
+    const [shoppingCart, setShoppingCart] = useState({
+    items: [],
+  })
+
+  function handleAddItemToCart(id){
+    setShoppingCart(prevCart => {
+      const updatedItems = [...prevCart.items];
+      const existingItemIndex = updatedItems.findIndex(product => product.id === id);
 
       const existingItem = updatedItems[existingItemIndex];
 
@@ -22,9 +27,9 @@ function shoppingCartReducer( state, action) {
         }
         updatedItems[existingItemIndex] = updatedItem;
       } else {
-        const product = DUMMY_PRODUCTS.find(product => product.id === action.payload);
+        const product = DUMMY_PRODUCTS.find(product => product.id === id);
         updatedItems.push({
-          id: action.payload,
+          id: id,
           name: product.title,
           price: product.price,
           quantity: 1
@@ -33,17 +38,19 @@ function shoppingCartReducer( state, action) {
       return {
         items: updatedItems,
       }
-    }
+    })
+  }
 
-    if(action.type === 'UPDATE_ITEM'){
-        const updatedItems = [...state.items];
-      const updatedItemIndex = updatedItems.findIndex(item => item.id === action.payload.productId);
+  function handleAddOrReduceItems(productId, amount){
+    setShoppingCart(prevCart => {
+      const updatedItems = [...prevCart.items];
+      const updatedItemIndex = updatedItems.findIndex(item => item.id === productId);
 
       const updatedItem = {
         ...updatedItems[updatedItemIndex]
       };
 
-      updatedItem.quantity += action.payload.amount;
+      updatedItem.quantity += amount;
 
       if(updatedItem.quantity <= 0) {
         updatedItems.splice(updatedItemIndex, 1);
@@ -54,38 +61,11 @@ function shoppingCartReducer( state, action) {
       return {
         items: updatedItems,
       }
-    }
-
-    return state;
-}
-
-export default function CartContextProvider({children}){
-    const [shoppingCartState, shoppingCartDispatch] = useReducer(
-        shoppingCartReducer, 
-        {
-        items: []
-        }
-    )
-
-  function handleAddItemToCart(id){
-    shoppingCartDispatch({
-        type: 'ADD_ITEM',
-        payload: id
-    })
-  }
-
-  function handleAddOrReduceItems(productId, amount){
-    shoppingCartDispatch({
-        type: 'UPDATE_ITEM',
-        payload: {
-            productId,
-            amount,
-        }
     })
   }
 
   const ctxValue = {
-    items: shoppingCartState.items,
+    items: shoppingCart.items,
     addItemsToCart: handleAddItemToCart,
     updateItemQuantity: handleAddOrReduceItems
   }
