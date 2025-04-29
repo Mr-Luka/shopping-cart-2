@@ -1,4 +1,4 @@
-import {createContext, useState,} from 'react';
+import {createContext, useReducer} from 'react';
 import { DUMMY_PRODUCTS } from '../dummy-products';
 
 
@@ -8,15 +8,10 @@ export const ShopContext = createContext({
     updateItemQuantity: ()=> {}
 })
 
-export default function CartContextProvider({children}){
-    const [shoppingCart, setShoppingCart] = useState({
-    items: [],
-  })
-
-  function handleAddItemToCart(id){
-    setShoppingCart(prevCart => {
-      const updatedItems = [...prevCart.items];
-      const existingItemIndex = updatedItems.findIndex(product => product.id === id);
+function shoppingCartReducer (state, action){
+    if(action.type === 'ADD_ITEM') {
+    const updatedItems = [...state.items];
+      const existingItemIndex = updatedItems.findIndex(product => product.id === action.payload);
 
       const existingItem = updatedItems[existingItemIndex];
 
@@ -27,9 +22,9 @@ export default function CartContextProvider({children}){
         }
         updatedItems[existingItemIndex] = updatedItem;
       } else {
-        const product = DUMMY_PRODUCTS.find(product => product.id === id);
+        const product = DUMMY_PRODUCTS.find(product => product.id === action.payload);
         updatedItems.push({
-          id: id,
+          id: action.payload,
           name: product.title,
           price: product.price,
           quantity: 1
@@ -38,19 +33,17 @@ export default function CartContextProvider({children}){
       return {
         items: updatedItems,
       }
-    })
-  }
+    }
 
-  function handleAddOrReduceItems(productId, amount){
-    setShoppingCart(prevCart => {
-      const updatedItems = [...prevCart.items];
-      const updatedItemIndex = updatedItems.findIndex(item => item.id === productId);
+    if(action.type === 'UPDATE_ITEM'){
+        const updatedItems = [...state.items];
+      const updatedItemIndex = updatedItems.findIndex(item => item.id === action.payload.productId);
 
       const updatedItem = {
         ...updatedItems[updatedItemIndex]
       };
 
-      updatedItem.quantity += amount;
+      updatedItem.quantity += action.payload.amount;
 
       if(updatedItem.quantity <= 0) {
         updatedItems.splice(updatedItemIndex, 1);
@@ -61,11 +54,38 @@ export default function CartContextProvider({children}){
       return {
         items: updatedItems,
       }
+    }
+
+    return state;
+}
+
+export default function CartContextProvider({children}){
+    const [shoppingCartState, shoppingCartDispatch] = useReducer(
+        shoppingCartReducer,
+        {
+            items: [],
+        });
+
+
+  function handleAddItemToCart(id){
+    shoppingCartDispatch({
+        type: 'ADD_ITEM',
+        payload: id
+    })
+  }
+
+  function handleAddOrReduceItems(productId, amount){
+    shoppingCartDispatch({
+        type: 'UPDATE_ITEM',
+        payload: {
+            productId,
+            amount,
+        }
     })
   }
 
   const ctxValue = {
-    items: shoppingCart.items,
+    items: shoppingCartState.items,
     addItemsToCart: handleAddItemToCart,
     updateItemQuantity: handleAddOrReduceItems
   }
